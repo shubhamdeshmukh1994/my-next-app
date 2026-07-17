@@ -1,8 +1,6 @@
 "use client";
 import React, { ChangeEvent, useEffect, useState, useRef } from "react";
-import Header from "../componants/Header";
 import { supabase } from "@/lib/supabase/client";
-import { redirect } from "next/navigation";
 interface User {
   id: number;
   name: string;
@@ -194,222 +192,217 @@ const UsersPage = () => {
     }
   };
   return (
-    <>
-      <Header />
-      <div>UsersPage</div>
-      <div className="min-h-screen bg-gray-100 py-8">
-        <div className="mx-auto max-w-4xl space-y-8 px-4">
-          {/* Create User */}
-          <div className="rounded-xl bg-white p-5 shadow">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-xm font-semibold text-gray-800">
-                {editingUserId ? "Update User" : "Create User"}
-              </h2>
+    <section className="mx-auto w-full max-w-4xl space-y-8 py-8">
+      {/* Create User */}
+      <div className="bg-dark-100 border-dark-200 card-shadow rounded-[10px] border px-5 py-6">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-schibsted-grotesk text-2xl font-bold">
+            {editingUserId ? "Update User" : "Create User"}
+          </h2>
 
-              {error && <span className="text-sm text-red-600">{error}</span>}
+          {error && <span className="text-destructive text-sm">{error}</span>}
+        </div>
+
+        <form className="space-y-4">
+          {/* Row 1 */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <input
+              type="text"
+              placeholder="Full Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="bg-dark-200 placeholder:text-light-200 rounded-[6px] px-5 py-2.5 focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+
+            <input
+              type="date"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+              className="bg-dark-200 rounded-[6px] px-5 py-2.5 focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+          </div>
+
+          {/* Row 2 */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-dark-200 placeholder:text-light-200 rounded-[6px] px-5 py-2.5 focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+            <input
+              type="tel"
+              placeholder="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="bg-dark-200 placeholder:text-light-200 rounded-[6px] px-5 py-2.5 focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+          </div>
+
+          {/* Row 3 */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {/* Password */}
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-dark-200 placeholder:text-light-200 w-full rounded-[6px] px-5 py-2.5 pr-16 focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-primary absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium hover:opacity-80"
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
             </div>
 
-            <form className="space-y-4">
-              {/* Row 1 */}
-              <div className="grid grid-cols-2 gap-3">
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="rounded-lg border px-3 py-2 focus:border-blue-500 focus:outline-none"
-                />
-
-                <input
-                  type="date"
-                  value={dob}
-                  onChange={(e) => setDob(e.target.value)}
-                  className="rounded-lg border px-3 py-2 focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-
-              {/* Row 2 */}
-              <div className="grid grid-cols-2 gap-4">
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="rounded-lg border px-3 py-2 focus:border-blue-500 focus:outline-none"
-                />
-                <input
-                  type="tel"
-                  placeholder="Phone"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="rounded-lg border px-3 py-2 focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-
-              {/* Row 3 */}
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                {/* Password */}
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 pr-16 focus:border-blue-500 focus:outline-none"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-blue-600 hover:text-blue-800"
-                  >
-                    {showPassword ? "Hide" : "Show"}
-                  </button>
-                </div>
-
-                {/* Profile Image */}
-                <div className="flex items-center gap-3 rounded-lg border border-gray-300 px-3 py-2">
-                  {/* Image Preview */}
-                  <div className="h-10 w-10 overflow-hidden rounded-full border bg-gray-100 flex-shrink-0">
-                    {userImage || currentImage ? (
-                      <img
-                        src={
-                          userImage
-                            ? URL.createObjectURL(userImage)
-                            : currentImage
-                        }
-                        alt="Profile"
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center text-lg">
-                        👤
-                      </div>
-                    )}
-                  </div>
-
-                  {/* File Name */}
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm text-gray-600">
-                      {userImage
-                        ? userImage.name
+            {/* Profile Image */}
+            <div className="bg-dark-200 flex items-center gap-3 rounded-[6px] px-3 py-2">
+              {/* Image Preview */}
+              <div className="border-dark-200 bg-dark-100 h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border">
+                {userImage || currentImage ? (
+                  <img
+                    src={
+                      userImage
+                        ? URL.createObjectURL(userImage)
                         : currentImage
-                          ? "Current Image"
-                          : "No image selected"}
-                    </p>
+                    }
+                    alt="Profile"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-lg">
+                    👤
                   </div>
-
-                  {/* Choose Button */}
-                  <label className="cursor-pointer rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700">
-                    Choose
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleUserImage}
-                      className="hidden"
-                    />
-                  </label>
-
-                  {/* Remove Button */}
-                  {(userImage || currentImage) && (
-                    <button
-                      type="button"
-                      onClick={handleRemoveImage}
-                      className="rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-white hover:bg-red-600"
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
+                )}
               </div>
-              <div>
+
+              {/* File Name */}
+              <div className="min-w-0 flex-1">
+                <p className="text-light-200 truncate text-sm">
+                  {userImage
+                    ? userImage.name
+                    : currentImage
+                      ? "Current Image"
+                      : "No image selected"}
+                </p>
+              </div>
+
+              {/* Choose Button */}
+              <label className="pill cursor-pointer">
+                Choose
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleUserImage}
+                  className="hidden"
+                />
+              </label>
+
+              {/* Remove Button */}
+              {(userImage || currentImage) && (
                 <button
                   type="button"
-                  onClick={handleUser}
-                  disabled={isPending}
-                  className="min-w-[150px] rounded-lg bg-blue-600 px-6 py-2 font-medium text-white hover:bg-blue-700 disabled:bg-blue-400"
+                  onClick={handleRemoveImage}
+                  className="bg-destructive text-foreground rounded-[6px] px-3 py-2 text-sm font-medium hover:opacity-90"
                 >
-                  {editingUserId ? "Update User" : "Create User"}
+                  Remove
                 </button>
-              </div>
-            </form>
-          </div>
-
-          {/* Users List */}
-          <div className="rounded-xl bg-white p-6 shadow">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-2xl font-semibold text-gray-800">Users</h2>
-
-              <span className="rounded-full bg-gray-100 px-3 py-1 text-sm">
-                {users.length} Users
-              </span>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="border-b bg-gray-50 text-left">
-                    <th></th>
-                    <th className="p-3">Name</th>
-                    <th className="p-3">Email</th>
-                    <th className="p-3">Phone</th>
-                    <th className="p-3">DOB</th>
-                    <th className="p-3 text-cente *:first-letter:r">Actions</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {users.map((user: any) => (
-                    <tr key={user.id} className="border-b hover:bg-gray-50">
-                      <td>
-                        {user.signedImageUrl && (
-                          <img
-                            src={user.signedImageUrl}
-                            alt="Profile"
-                            className="h-10 w-10 rounded-full object-cover"
-                          />
-                        )}
-                      </td>
-                      <td className="p-3">{user.name}</td>
-                      <td className="p-3">{user.email}</td>
-                      <td className="p-3">{user.phone}</td>
-                      <td className="p-3">{user.dob}</td>
-
-                      <td className="p-3">
-                        <div className="flex justify-center gap-2">
-                          <button
-                            onClick={() => handleEdit(user.id)}
-                            className="rounded bg-yellow-500 px-3 py-1 text-sm text-white hover:bg-yellow-600"
-                          >
-                            Edit
-                          </button>
-
-                          <button
-                            onClick={() => handleDelete(user.id)}
-                            className="rounded bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-
-                  {users.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="p-6 text-center text-gray-500">
-                        No users found.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+              )}
             </div>
           </div>
+          <div>
+            <button
+              type="button"
+              onClick={handleUser}
+              disabled={isPending}
+              className="bg-primary hover:bg-primary/90 min-w-[150px] rounded-[6px] px-6 py-2.5 font-semibold text-black disabled:opacity-50"
+            >
+              {editingUserId ? "Update User" : "Create User"}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Users List */}
+      <div className="bg-dark-100 border-dark-200 card-shadow rounded-[10px] border px-5 py-6">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-schibsted-grotesk text-2xl font-bold">Users</h2>
+
+          <span className="pill">{users.length} Users</span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left">
+            <thead>
+              <tr className="border-dark-200 text-light-200 border-b">
+                <th></th>
+                <th className="p-3 font-medium">Name</th>
+                <th className="p-3 font-medium">Email</th>
+                <th className="p-3 font-medium">Phone</th>
+                <th className="p-3 font-medium">DOB</th>
+                <th className="p-3 text-center font-medium">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {users.map((user: any) => (
+                <tr
+                  key={user.id}
+                  className="border-dark-200/60 hover:bg-dark-200/40 border-b"
+                >
+                  <td>
+                    {user.signedImageUrl && (
+                      <img
+                        src={user.signedImageUrl}
+                        alt="Profile"
+                        className="h-10 w-10 rounded-full object-cover"
+                      />
+                    )}
+                  </td>
+                  <td className="p-3">{user.name}</td>
+                  <td className="p-3">{user.email}</td>
+                  <td className="p-3">{user.phone}</td>
+                  <td className="p-3">{user.dob}</td>
+
+                  <td className="p-3">
+                    <div className="flex justify-center gap-2">
+                      <button
+                        onClick={() => handleEdit(user.id)}
+                        className="bg-primary/20 text-primary hover:bg-primary/30 rounded-[6px] px-3 py-1 text-sm"
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(user.id)}
+                        className="bg-destructive text-foreground rounded-[6px] px-3 py-1 text-sm hover:opacity-90"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+
+              {users.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="text-light-200 p-6 text-center">
+                    No users found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
-    </>
+    </section>
   );
 };
 

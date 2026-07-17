@@ -2,6 +2,7 @@
 import { supabase } from "@/lib/supabase/client";
 import React, { useState, useActionState } from "react";
 import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
 
 export default function SignUp() {
   const router = useRouter();
@@ -32,6 +33,10 @@ export default function SignUp() {
       if (error) {
         setError(error.message);
         return;
+      }
+      if (data.user) {
+        posthog.identify(data.user.id);
+        posthog.capture("user_signed_up");
       }
       setShowVerifyEmail(true);
       // Redirect after 5 seconds

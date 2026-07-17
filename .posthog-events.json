@@ -1,0 +1,52 @@
+[
+  {
+    "event_name": "user_signed_up",
+    "event_description": "Fired when a user successfully completes sign up via Supabase auth.",
+    "file": "app/signup/page.tsx"
+  },
+  {
+    "event_name": "user_logged_in",
+    "event_description": "Fired when a user successfully signs in with email and password.",
+    "file": "app/login/page.tsx"
+  },
+  {
+    "event_name": "user_login_failed",
+    "event_description": "Fired when a login attempt fails due to invalid credentials or other error.",
+    "file": "app/login/page.tsx"
+  },
+  {
+    "event_name": "user_logged_out",
+    "event_description": "Fired when the authenticated user clicks the logout button in the header.",
+    "file": "app/componants/Header.tsx"
+  },
+  {
+    "event_name": "explore_events_clicked",
+    "event_description": "Fired when a visitor clicks the Explore Events button on the home page.",
+    "file": "app/componants/ExploreBtn.tsx"
+  },
+  {
+    "event_name": "event_card_clicked",
+    "event_description": "Fired when a visitor clicks on an event card to view its details.",
+    "file": "app/componants/EventCard.tsx"
+  },
+  {
+    "event_name": "add_to_cart_clicked",
+    "event_description": "Fired when a user clicks the Add to Cart button.",
+    "file": "app/componants/AddToCart.tsx"
+  },
+  {
+    "event_name": "user_record_created",
+    "event_description": "Fired when an admin successfully creates a new user record in the users table.",
+    "file": "app/users/page.tsx"
+  },
+  {
+    "event_name": "user_record_updated",
+    "event_description": "Fired when an admin successfully updates an existing user record.",
+    "file": "app/users/page.tsx"
+  },
+  {
+    "event_name": "user_record_deleted",
+    "event_description": "Fired when an admin confirms and deletes a user record from the users table.",
+    "file": "app/users/page.tsx"
+  }
+]

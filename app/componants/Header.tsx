@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/lib/supabase/client";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import posthog from "posthog-js";
 type HeaderProps = {
   user: {
     name: string;
@@ -31,6 +32,7 @@ export default function Header() {
         redirect("/login");
       }
       console.log("user",user)
+      posthog.identify(user.id);
       setUserData({
         name: user?.identities?.[0]?.identity_data?.full_name,
         email: "user",
@@ -54,6 +56,9 @@ export default function Header() {
 
   const handleLogout = async () => {
     try {
+      posthog.capture("user_logged_out");
+      posthog.reset();
+
       // Logout from Supabase
       await supabase.auth.signOut();
 

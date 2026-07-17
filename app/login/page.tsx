@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase/client";
 import React, { useState, useActionState } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
+import posthog from "posthog-js";
 
 export default function Login() {
   const router = useRouter();
@@ -22,8 +23,14 @@ export default function Login() {
 
     if (error) {
       setError(error.message);
+      posthog.capture("user_login_failed", {
+        error_message: error.message,
+      });
       return;
     }
+
+    posthog.identify(data.user.id);
+    posthog.capture("user_logged_in");
 
     router.replace("/dashboard");
     router.refresh();
