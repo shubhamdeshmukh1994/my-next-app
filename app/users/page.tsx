@@ -1,6 +1,7 @@
 "use client";
 import React, { ChangeEvent, useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabase/client";
+import posthog from "posthog-js";
 interface User {
   id: number;
   name: string;
@@ -90,6 +91,13 @@ const UsersPage = () => {
       setError(error.message);
       return;
     }
+
+    if (editingUserId) {
+      posthog.capture("user_record_updated", { user_id: data.id });
+    } else {
+      posthog.capture("user_record_created", { user_id: data.id });
+    }
+
     if (data.id && userImage) {
       try {
         const imagePath = await uploadUserImage(data.id, userImage);
@@ -157,6 +165,9 @@ const UsersPage = () => {
       setError(error.message);
       return;
     }
+
+    posthog.capture("user_record_deleted", { user_id: userId });
+
     await fetchUsers();
   };
 

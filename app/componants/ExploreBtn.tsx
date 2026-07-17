@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import posthog from "posthog-js";
 
 function ExploreBtn() {
   return (
@@ -12,6 +13,7 @@ function ExploreBtn() {
       className="mt-7 mx-auto"
       onClick={() => {
         console.log("btn click");
+        posthog.capture("explore_events_clicked");
       }}
     >
       <Link href='#events'>
