@@ -13,7 +13,7 @@ npm run lint     # next lint (eslint-config-next / core-web-vitals)
 
 There is no test framework configured in this repo (no jest/vitest/playwright and no test script) — `npm run lint` and `npm run build` (which type-checks via `tsc`) are the only automated checks available.
 
-Requires a `.env` with `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (read in `lib/supabase/client.ts`, `lib/supabase/server.ts`, and `middleware.ts`).
+Requires a `.env` with `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (read in `lib/supabase/client.ts`, `lib/supabase/server.ts`, and `proxy.ts`).
 
 ## Architecture
 
@@ -23,7 +23,7 @@ Requires a `.env` with `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBL
 - `lib/supabase/client.ts` — `createBrowserClient`, for use in Client Components (`"use client"` pages/components).
 - `lib/supabase/server.ts` — `createClient()` (async), uses `createServerClient` with `next/headers` `cookies()`. For Server Components/Server Actions only — do not import this from a Client Component.
 
-**Auth enforcement lives in `middleware.ts`, not in React.** It calls `supabase.auth.getUser()` against the session cookie on every request, redirects unauthenticated users to `/login` unless the path is in `publicRoutes` (`/login`, `/signup`), and redirects authenticated users away from those public routes to `/dashboard`. This is the actual gate.
+**Auth enforcement lives in `proxy.ts` (Next.js 16's renamed `middleware.ts`), not in React.** It calls `supabase.auth.getUser()` against the session cookie on every request, redirects unauthenticated users to `/login` unless the path is in `publicRoutes` (`/login`, `/signup`), and redirects authenticated users away from those public routes to `/dashboard`. This is the actual gate.
 `app/componants/ClientAuthProvider.tsx` implements a second, unrelated auth scheme (a `localStorage` `auth-token` + route guard), but it is not imported anywhere (not wired into `app/layout.tsx` or any page), so it currently has no effect. Don't assume it's active; don't build on top of it without wiring it in first.
 
 **Component directory is `app/componants/` (misspelled).** Existing imports (e.g. `app/dashboard/page.tsx`, `app/users/page.tsx`) reference this path — keep the spelling for consistency unless asked to rename it project-wide.
@@ -32,6 +32,6 @@ Requires a `.env` with `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBL
 - Supabase Auth's own `auth.users`, populated via `supabase.auth.signUp` / `signInWithPassword` (`app/signup/page.tsx`, `app/login/page.tsx`) and read via `supabase.auth.getUser()` (`app/componants/Header.tsx`).
 - A separate `users` table in the Supabase database (name/dob/email/phone/password/image_url) managed entirely by `app/users/page.tsx`, which does full CRUD (insert/update/select/delete) directly against that table from the client, independent of the authenticated identity above. Profile images for these rows go through Supabase Storage bucket `user_images`, path pattern `private/{userId}.{ext}` (`uploadUserImage` in `app/users/page.tsx`).
 
-**Styling:** Tailwind CSS + DaisyUI, theme fixed to `winter` (set via `data-theme="winter"` on `<html>` in `app/layout.tsx` and in `daisyui.themes` in `tailwind.config.ts`). `tailwind.config.ts` content globs include `./pages` and `./components`, but only `app/` currently exists/is used.
+**Styling:** Tailwind CSS v4 (CSS-first config, no `tailwind.config.ts`) + DaisyUI v5, theme fixed to `winter` (set via `data-theme="winter"` on `<html>` in `app/layout.tsx` and via `@plugin "daisyui" { themes: winter --default; }` in `app/globals.css`).
 
 **Path alias:** `@/*` maps to the repo root (`tsconfig.json`), e.g. `@/lib/supabase/client`.
