@@ -18,8 +18,8 @@ export const NavBar = () => {
           </Link>
           <ul>
             <Link href="/">Home</Link>
-            <Link href="/events">Events</Link>
-            <Link href="">Create Events</Link>
+            <Link href="/">Events</Link>
+            <Link href="/">Create Events</Link>
             <Link href="/users">Users</Link>
           </ul>
         

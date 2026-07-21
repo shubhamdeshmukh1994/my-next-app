@@ -1,6 +1,7 @@
 "use client";
 import React, { ChangeEvent, useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabase/client";
+import { uploadPrivateImage, getSignedImageUrl } from "@/lib/supabase/storage";
 import posthog from "posthog-js";
 interface User {
   id: number;
@@ -39,13 +40,11 @@ const UsersPage = () => {
             return { ...user, signedImageUrl: null };
           }
 
-          const { data } = await supabase.storage
-            .from("user_images")
-            .createSignedUrl(user.image_url, 3600);
+          const { url } = await getSignedImageUrl(supabase, "user_images", user.image_url);
 
           return {
             ...user,
-            signedImageUrl: data?.signedUrl,
+            signedImageUrl: url,
           };
         }),
       );
@@ -144,10 +143,8 @@ const UsersPage = () => {
     setDob(data.dob);
     setPassword(data.password);
     if (data.image_url) {
-      const { data: image_data } = await supabase.storage
-        .from("user_images")
-        .createSignedUrl(data.image_url, 3600);
-      setCurrentImage(image_data?.signedUrl ?? "");
+      const { url } = await getSignedImageUrl(supabase, "user_images", data.image_url);
+      setCurrentImage(url ?? "");
     }
     setEditingUserId(data.id);
   };
@@ -181,17 +178,20 @@ const UsersPage = () => {
   const uploadUserImage = async (userId: number, file: File) => {
     const extension = file.name.split(".").pop();
     const filePath = `private/${userId}.${extension}`;
-    const { error } = await supabase.storage
-      .from("user_images")
-      .upload(filePath, file, {
-        upsert: true,
-      });
+
+    const { path, error } = await uploadPrivateImage(
+      supabase,
+      "user_images",
+      filePath,
+      file,
+      { upsert: true },
+    );
 
     if (error) {
-      console.error("error while uploading user image", error?.message);
+      console.error("error while uploading user image", error);
       return null;
     }
-    return filePath;
+    return path;
   };
 
   const handleRemoveImage = () => {
