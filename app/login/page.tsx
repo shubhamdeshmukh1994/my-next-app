@@ -32,7 +32,7 @@ export default function Login() {
     posthog.identify(data.user.id);
     posthog.capture("user_logged_in");
 
-    router.replace("/dashboard");
+    router.replace("/");
     router.refresh();
   };
 

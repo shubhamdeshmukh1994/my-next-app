@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { uploadPublicImage } from "@/lib/supabase/storage";
 export async function POST(req: NextRequest) {
@@ -58,6 +59,11 @@ export async function POST(req: NextRequest) {
         { status: 500 },
       );
     }
+
+    // Purge the homepage's cached event list so the next visit (by anyone)
+    // shows this event immediately instead of waiting for its normal
+    // revalidation window.
+    revalidatePath("/");
 
     return NextResponse.json(
       { message: "Event created successfully", event: data },
