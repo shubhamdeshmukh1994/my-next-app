@@ -2,8 +2,8 @@ import React from 'react'
 import {notFound} from "next/navigation";
 import {getSimilarEventsBySlug} from "@/lib/actions/event.actions";
 import Image from "next/image";
-import BookEvent from "@/app/componants/BookEvent";
-import EventCard from "@/app/componants/EventCard";
+import BookEvent from "@/app/componants/events/BookEvent";
+import EventCard from "@/app/componants/events/EventCard";
 import {cacheLife} from "next/cache";
 import {IEvent} from "@/lib/types";
 

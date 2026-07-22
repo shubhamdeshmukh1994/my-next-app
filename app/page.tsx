@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import ExploreBtn from "@/app/componants/ExploreBtn";
-import EventCard from "./componants/EventCard";
+import ExploreBtn from "@/app/componants/events/ExploreBtn";
+import EventCard from "./componants/events/EventCard";
 import { IEvent } from "@/lib/types";
 
 // Isolated so its uncached fetch can be wrapped in <Suspense> below --

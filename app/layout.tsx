@@ -2,8 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Martian_Mono, Schibsted_Grotesk, Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
-import LightRays from "./componants/LightRays";
-import { NavBar } from "./componants/NavBar";
+import LightRays from "./componants/events/LightRays";
+import { NavBar } from "./componants/header/NavBar";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
