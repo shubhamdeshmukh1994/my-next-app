@@ -15,6 +15,8 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setIsPending(true);
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email.trim(),
@@ -26,6 +28,7 @@ export default function Login() {
       posthog.capture("user_login_failed", {
         error_message: error.message,
       });
+      setIsPending(false);
       return;
     }
 
@@ -93,6 +96,7 @@ export default function Login() {
           <button
             type="button"
             onClick={handleLogin}
+            disabled={isPending}
             className="bg-primary hover:bg-primary/90 w-full rounded-[6px] py-3 font-semibold text-black transition disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isPending ? "Signing In..." : "Sign In"}

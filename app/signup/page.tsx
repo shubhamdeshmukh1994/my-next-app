@@ -112,6 +112,7 @@ export default function SignUp() {
             <button
               type="button"
               onClick={handleSignUp}
+              disabled={isPending}
               className="bg-primary hover:bg-primary/90 w-full rounded-[6px] py-3 font-semibold text-black transition disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isPending ? "Signing Up..." : "Sign Up"}

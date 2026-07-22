@@ -21,16 +21,19 @@ const UsersPage = () => {
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState("");
   const [users, setUsers] = useState<User[]>([]);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(true);
   const [editingUserId, setEditingUserId] = useState(null);
   const [userImage, setUserImage] = useState<File | null>(null);
   const [currentImage, setCurrentImage] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchUsers = async () => {
+    setIsLoadingUsers(true);
     const { data: users, error } = await supabase.from("users").select("*");
     if (error) {
       console.log(error);
       setError(error.message);
+      setIsLoadingUsers(false);
       return;
     }
     if (users) {
@@ -51,6 +54,7 @@ const UsersPage = () => {
 
       setUsers(usersWithImages ?? []);
     }
+    setIsLoadingUsers(false);
   };
 
   useEffect(() => {
@@ -59,6 +63,7 @@ const UsersPage = () => {
 
   const handleUser = async () => {
     setError("");
+    setIsPending(true);
 
     const payload = {
       name,
@@ -88,6 +93,7 @@ const UsersPage = () => {
 
     if (error) {
       setError(error.message);
+      setIsPending(false);
       return;
     }
 
@@ -120,6 +126,7 @@ const UsersPage = () => {
     setPassword("");
     setUserImage(null);
     setEditingUserId(null);
+    setIsPending(false);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -333,9 +340,15 @@ const UsersPage = () => {
               type="button"
               onClick={handleUser}
               disabled={isPending}
-              className="bg-primary hover:bg-primary/90 min-w-[150px] rounded-[6px] px-6 py-2.5 font-semibold text-black disabled:opacity-50"
+              className="bg-primary hover:bg-primary/90 min-w-[150px] rounded-[6px] px-6 py-2.5 font-semibold text-black disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {editingUserId ? "Update User" : "Create User"}
+              {isPending
+                ? editingUserId
+                  ? "Updating..."
+                  : "Creating..."
+                : editingUserId
+                  ? "Update User"
+                  : "Create User"}
             </button>
           </div>
         </form>
@@ -402,7 +415,15 @@ const UsersPage = () => {
                 </tr>
               ))}
 
-              {users.length === 0 && (
+              {isLoadingUsers && users.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="text-light-200 p-6 text-center">
+                    Loading users...
+                  </td>
+                </tr>
+              )}
+
+              {!isLoadingUsers && users.length === 0 && (
                 <tr>
                   <td colSpan={6} className="text-light-200 p-6 text-center">
                     No users found.
