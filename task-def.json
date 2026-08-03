@@ -1,0 +1,27 @@
+{
+  "family": "myapp-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::928747700153:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "myapp",
+      "image": "<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/myapp:latest",
+      "portMappings": [{ "containerPort": 3000, "protocol": "tcp" }],
+      "environment": [{ "name": "NODE_ENV", "value": "production" }],
+      "secrets": [
+        { "name": "SUPABASE_SERVICE_ROLE_KEY", "valueFrom": "arn:aws:ssm:us-east-1:928747700153:parameter/myapp/SUPABASE_SERVICE_ROLE_KEY" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/myapp",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
