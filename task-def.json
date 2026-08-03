@@ -8,7 +8,7 @@
   "containerDefinitions": [
     {
       "name": "myapp",
-      "image": "<ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/myapp:latest",
+      "image": "928747700153.dkr.ecr.us-east-1.amazonaws.com/myapp:latest",
       "portMappings": [{ "containerPort": 3000, "protocol": "tcp" }],
       "environment": [{ "name": "NODE_ENV", "value": "production" }],
       "secrets": [
